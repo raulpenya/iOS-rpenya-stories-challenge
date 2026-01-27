@@ -1,0 +1,21 @@
+name: rpenya-stories-challenge
+
+options:
+  bundleIdPrefix: rpa
+
+settings:
+  base:
+    SWIFT_VERSION: 5.9
+    IPHONEOS_DEPLOYMENT_TARGET: 17.0
+
+targets:
+  MyApp:
+    type: application
+    platform: iOS
+    sources:
+      - path: rpenya-stories-challenge
+    info:
+      path: rpenya-stories-challenge/Info.plist
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: rpa.rpenya-stories-challenge
