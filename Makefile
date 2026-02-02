@@ -8,4 +8,5 @@ open:
 	open $(PROJECT_NAME).xcodeproj
 
 clean:
+	rm -rf *.xcodeproj
 	rm -rf ~/Library/Developer/Xcode/DerivedData/*
