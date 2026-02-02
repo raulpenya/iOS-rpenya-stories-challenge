@@ -15,7 +15,9 @@ options:
 #
 ########################
 
-# packages:
+packages:
+  Data:
+    path: Packages/Data
 
 ########################
 #
@@ -233,7 +235,8 @@ targetTemplates:
     #
     ########################
 
-    # dependencies:
+    dependencies:
+      - package: Data
 
 ########################
 #
@@ -327,10 +330,6 @@ targets:
         Staging:
           ENABLE_TESTABILITY: true
           ONLY_ACTIVE_ARCH: true
-    # dependencies:
-      # - target: WeddingPro
-      # - package: Networking
-      # - package: Navigator
-      # - package: Roster
-      # - package: SimpleKeychain
-      # - package: FeatureFlagsPlatform
+    dependencies:
+      - target: rpenya-stories-challenge
+      - package: Data
