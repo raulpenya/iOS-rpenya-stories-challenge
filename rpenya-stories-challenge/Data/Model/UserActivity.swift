@@ -8,7 +8,6 @@
 import Foundation
 
 struct UserActivity: Codable {
-    let userId: Int
     var seenStoryIds: Set<Int>
     var likedStoryIds: Set<Int>
 }
