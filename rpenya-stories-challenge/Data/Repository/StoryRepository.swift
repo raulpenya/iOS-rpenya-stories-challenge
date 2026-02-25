@@ -11,10 +11,13 @@ struct StoryRepository {
     
     let persistenceService: PersistenceService = PersistenceService()
 
-    func getStories() throws -> [Story] {
+    func getUserStories() throws -> [UserStories] {
         let users: [User] = try parseUsers()
         let userActivity = try persistenceService.getUserActitvity()
-        return generateStories(with: users, and: userActivity)
+        let stories = generateStories(with: users, and: userActivity)
+        return users.compactMap { user in
+            UserStories(id: user.id, user: user, stories: stories.filter { user.id == $0.user.id })
+        }
     }
     
     func addStoryAsSeen(story: Story) throws {
