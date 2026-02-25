@@ -7,6 +7,14 @@
 
 import Foundation
 
+struct Root: Decodable {
+    let pages: [Page]
+}
+
+struct Page: Decodable {
+    let users: [User]
+}
+
 struct User: Identifiable, Decodable {
     let id: Int
     let name: String

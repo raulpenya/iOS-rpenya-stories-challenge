@@ -7,39 +7,36 @@
 
 import Foundation
 
-struct StoryRepository {
-    
-    let persistenceService: PersistenceService = PersistenceService()
+protocol StoryRepository {
+    func getStories(with page: Int) throws -> [Story]
+}
 
-    func getUserStories() throws -> [UserStories] {
-        let users: [User] = try parseUsers()
-        let userActivity = try persistenceService.getUserActitvity()
-        let stories = generateStories(with: users, and: userActivity)
+struct StoryDataRepository: StoryRepository {
+    private let pages: [Page]
+    
+    init() throws {
+        self.pages = try StoryDataRepository.parsePages()
+    }
+
+    func getStories(with page: Int) throws -> [Story] {
+        guard !pages.isEmpty else { return [] }
+        let index = page % pages.count
+        return pages[index].users.compactMap { Story(user: $0) }
+    }
+    
+    private func generateStories(with users: [User]) -> [Story] {
         return users.compactMap { user in
-            UserStories(id: user.id, user: user, stories: stories.filter { user.id == $0.user.id })
+            Story(user: user)
         }
     }
     
-    func addStoryAsSeen(story: Story) throws {
-        try persistenceService.insertStoryAsSeen(story: story)
-    }
-    
-    func addStoryAsLiked(story: Story) throws {
-        try persistenceService.insertStoryAsLiked(story: story)
-    }
-    
-    private func parseUsers() throws -> [User] {
-        guard let path = Bundle.main.path(forResource: "questions", ofType: "json") else {
+    private static func parsePages() throws -> [Page] {
+        guard let path = Bundle.main.path(forResource: "users", ofType: "json") else {
             throw NSError(domain: "Error", code: 0, userInfo: nil)
         }
         let fileUrl = URL(fileURLWithPath: path)
         let data = try Data(contentsOf: fileUrl)
-        return try JSONDecoder().decode([User].self, from: data)
-    }
-    
-    private func generateStories(with users: [User], and activity: UserActivity?) -> [Story] {
-        return users.compactMap { user in
-            Story(user: user, activity: activity)
-        }
+        let root = try JSONDecoder().decode(Root.self, from: data)
+        return root.pages
     }
 }
