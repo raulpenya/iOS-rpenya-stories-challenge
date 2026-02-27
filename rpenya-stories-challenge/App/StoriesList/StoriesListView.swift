@@ -19,7 +19,7 @@ struct StoryListView: View {
         ScrollView (.horizontal, showsIndicators: false) {
             LazyHStack {
                 ForEach(Array(viewModel.stories.enumerated()), id: \.element.id) { index, story in
-                    StoryCardView(story: story)
+                    StoryCardView(story: story, seen: viewModel.isSeen(story))
                         .onAppear {
                             if viewModel.isLast(story) {
                                 viewModel.loadNextPage()
@@ -46,25 +46,28 @@ struct StoryListView: View {
 
 struct StoryCardView: View {
     let story: Story
+    let seen: Bool
     
     var body: some View {
-        AsyncImage(url: URL(string: story.user.profile_picture_url)) { phase in
-            switch phase {
-            case .failure:
-                Image(systemName: "photo")
-                    .font(.largeTitle)
-            case .success(let image):
-                image
-                    .resizable()
-            default:
-                ProgressView()
+        ZStack {
+            AsyncImage(url: story.user.profilePictureURL) { phase in
+                switch phase {
+                case .failure:
+                    Image(systemName: "photo")
+                        .font(.largeTitle)
+                case .success(let image):
+                    image
+                        .resizable()
+                default:
+                    ProgressView()
+                }
             }
+            .frame(width: 100, height: 100)
+            .clipShape(.rect(cornerRadius: 50))
         }
-        .frame(width: 100, height: 100)
-        .clipShape(.rect(cornerRadius: 50))
+        .overlay(
+            Circle()
+                .stroke(seen ? Color.gray : Color.red, lineWidth: 4)
+        )
     }
 }
-
-//#Preview {
-//    StoryListView()
-//}
