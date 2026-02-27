@@ -20,32 +20,37 @@ struct StoriesListFullScreenView: View {
     }
 
     var body: some View {
-        ScrollView(.horizontal) {
-            LazyHStack(spacing: 0) {
-                ForEach(Array(viewModel.stories.enumerated()), id: \.offset) { index, story in
-                    StoryFullScreenCardView(story: story, liked: viewModel.isLiked(story), toggleLike: {
-                        viewModel.toggleLike(for: story)
-                    })
-                    .frame(width: UIScreen.main.bounds.width,
-                           height: UIScreen.main.bounds.height)
-                    .id(index)
-                    .onAppear {
-                        viewModel.markAsSeen(story)
+        ScrollViewReader { proxy in
+            ScrollView(.horizontal) {
+                LazyHStack(spacing: 0) {
+                    ForEach(Array(viewModel.stories.enumerated()), id: \.offset) { index, story in
+                        StoryFullScreenCardView(story: story, liked: viewModel.isLiked(story), toggleLike: {
+                            viewModel.toggleLike(for: story)
+                        })
+                        .frame(width: UIScreen.main.bounds.width,
+                               height: UIScreen.main.bounds.height)
+                        .id(index)
+                        .onAppear {
+                            viewModel.markAsSeen(story)
+                        }
                     }
                 }
+                .scrollTargetLayout()
             }
-        }
-        .scrollTargetBehavior(.paging)
-        .scrollPosition(id: $currentIndex)
-        .gesture(
-            DragGesture()
-                .onEnded { value in
-                    if value.translation.height > 150 {
-                        dismiss()
+            .scrollTargetBehavior(.paging)
+            .onAppear {
+                proxy.scrollTo(currentIndex, anchor: .leading)
+            }
+            .gesture(
+                DragGesture()
+                    .onEnded { value in
+                        if value.translation.height > 150 {
+                            dismiss()
+                        }
                     }
-                }
-        )
-        .ignoresSafeArea(edges: .all)
+            )
+            .ignoresSafeArea()
+        }
     }
 }
 
@@ -56,7 +61,7 @@ struct StoryFullScreenCardView: View {
     
     var body: some View {
         ZStack {
-            AsyncImage(url: URL(string: story.user.profile_picture_url)) { phase in
+            AsyncImage(url: story.pictureURL) { phase in
                 switch phase {
                 case .failure:
                     Image(systemName: "photo")
@@ -64,16 +69,61 @@ struct StoryFullScreenCardView: View {
                 case .success(let image):
                     image
                         .resizable()
+                        .scaledToFit()
                 default:
                     ProgressView()
                 }
             }
-            .frame(width: UIScreen.main.bounds.width,
-                   height: UIScreen.main.bounds.height)
-            Button(liked ? "Unlike" : "Like") {
-                toggleLike()
+            LinearGradient(
+                gradient: Gradient(colors: [
+                    Color.black.opacity(0.3),
+                    Color.clear,
+                    Color.black.opacity(0.3)
+                ]),
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .ignoresSafeArea()
+            VStack {
+                HStack(spacing: 12) {
+                    AsyncImage(url: story.user.profilePictureURL) { phase in
+                        switch phase {
+                        case .failure:
+                            Image(systemName: "photo")
+                                .font(.largeTitle)
+                        case .success(let image):
+                            image
+                                .resizable()
+                        default:
+                            ProgressView()
+                        }
+                    }
+                    .frame(width: 40, height: 40)
+                    .clipShape(.rect(cornerRadius: 20))
+                    
+                    Text(story.user.name)
+                        .foregroundColor(.white)
+                        .font(.headline)
+                    
+                    Spacer()
+                }
+                .padding(.horizontal)
+                .padding(.top, 50)
+                
+                Spacer()
+                
+                Button(action: toggleLike) {
+                    Text(liked ? "Unlike" : "Like")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 40)
+                        .padding(.vertical, 12)
+                        .background(Color.black.opacity(0.6))
+                        .clipShape(Capsule())
+                }
+                .padding(.bottom, 60)
             }
-            .padding(.bottom)
+           
         }
     }
 }
