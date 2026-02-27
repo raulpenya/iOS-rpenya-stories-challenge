@@ -9,12 +9,12 @@ import Foundation
 
 struct Story: Identifiable, Decodable {
     let id: Int
-    let picture_url: String
+    let pictureURL: URL
     let user: User
     
     init(user: User) {
         self.id = user.id
-        self.picture_url = user.profile_picture_url
+        self.pictureURL = user.profilePictureURL
         self.user = user
     }
 }
