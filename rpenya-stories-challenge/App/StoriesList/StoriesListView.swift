@@ -7,21 +7,26 @@
 
 import SwiftUI
 
+struct StorySelection: Identifiable {
+    let id: Int
+}
+
 struct StoryListView: View {
     let viewModel: StoryListViewModel
+    @State private var selection: StorySelection?
     
     var body: some View {
         ScrollView (.horizontal, showsIndicators: false) {
             LazyHStack {
-                ForEach(viewModel.stories) { story in
+                ForEach(Array(viewModel.stories.enumerated()), id: \.element.id) { index, story in
                     StoryCardView(story: story)
                         .onAppear {
                             if viewModel.isLast(story) {
                                 viewModel.loadNextPage()
                             }
                         }
-                        .onTapGesture { _ in
-                            
+                        .onTapGesture {
+                            selection = StorySelection(id: index)
                         }
                 }
             }
@@ -29,6 +34,12 @@ struct StoryListView: View {
         }
         .task {
             viewModel.loadNextPage()
+        }
+        .fullScreenCover(item: $selection) { selection in
+            StoriesListFullScreenView(
+                viewModel: viewModel,
+                initialIndex: selection.id
+            )
         }
     }
 }
