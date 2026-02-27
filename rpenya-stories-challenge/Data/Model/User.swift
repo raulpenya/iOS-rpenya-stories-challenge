@@ -18,5 +18,5 @@ struct Page: Decodable {
 struct User: Identifiable, Decodable {
     let id: Int
     let name: String
-    let profilePictureURL: URL
+    let profile_picture_url: String
 }

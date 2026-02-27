@@ -11,7 +11,7 @@ import SwiftUI
 struct rpenya_stories_challengeApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            RootView()
         }
     }
 }
