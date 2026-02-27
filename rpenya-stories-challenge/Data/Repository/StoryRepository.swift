@@ -21,7 +21,7 @@ struct StoryDataRepository: StoryRepository {
     func getStories(with page: Int) throws -> [Story] {
         guard !pages.isEmpty else { return [] }
         let index = page % pages.count
-        return pages[index].users.compactMap { Story(user: $0) }
+        return pages[index].users.map { Story(user: $0) }
     }
     
     private func generateStories(with users: [User]) -> [Story] {

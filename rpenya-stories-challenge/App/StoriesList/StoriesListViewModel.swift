@@ -39,14 +39,14 @@ final class StoryListViewModel {
             currentPageIndex += 1
         } catch {
             // handle error
+            // FIX
         }
         
         isLoading = false
     }
     
-    func isLast(_ story: Story) -> Bool {
-        guard !stories.isEmpty else { return true }
-        return self.stories.last?.id == story.id
+    func isLast(_ index: Int) -> Bool {
+        return index == stories.count - 1
     }
     
     func isSeen(_ story: Story) -> Bool {
@@ -63,11 +63,13 @@ final class StoryListViewModel {
         } else {
             userActivity.likedStoryIds.insert(story.id)
         }
+        // FIX
         try? activityRepository.updateUserActivity(userActivity)
     }
     
     func markAsSeen(_ story: Story) {
         userActivity.seenStoryIds.insert(story.id)
+        // FIX
         try? activityRepository.updateUserActivity(userActivity)
     }
 }

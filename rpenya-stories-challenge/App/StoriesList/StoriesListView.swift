@@ -21,7 +21,7 @@ struct StoryListView: View {
                 ForEach(Array(viewModel.stories.enumerated()), id: \.element.id) { index, story in
                     StoryCardView(story: story, seen: viewModel.isSeen(story))
                         .onAppear {
-                            if viewModel.isLast(story) {
+                            if viewModel.isLast(index) {
                                 viewModel.loadNextPage()
                             }
                         }

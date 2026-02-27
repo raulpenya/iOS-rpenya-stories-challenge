@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Story: Identifiable, Decodable {
+struct Story: Identifiable {
     let id: Int
     let pictureURL: URL
     let user: User
