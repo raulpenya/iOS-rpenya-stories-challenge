@@ -16,8 +16,6 @@ options:
 ########################
 
 packages:
-  Data:
-    path: Packages/Data
 
 ########################
 #
@@ -236,7 +234,6 @@ targetTemplates:
     ########################
 
     dependencies:
-      - package: Data
 
 ########################
 #
@@ -332,4 +329,3 @@ targets:
           ONLY_ACTIVE_ARCH: true
     dependencies:
       - target: rpenya-stories-challenge
-      - package: Data
