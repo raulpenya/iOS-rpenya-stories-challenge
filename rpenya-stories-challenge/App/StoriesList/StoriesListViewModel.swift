@@ -7,11 +7,17 @@
 
 import Foundation
 
+struct AlertError: Identifiable {
+    let id = UUID()
+    let message: String
+}
+
 @Observable
 final class StoryListViewModel {
 
     private(set) var userActivity: UserActivity
     private(set) var stories: [Story] = []
+    var alertError: AlertError?
 
     private let storyRepository: StoryRepository
     private let activityRepository: UserActivityRepository
@@ -38,8 +44,7 @@ final class StoryListViewModel {
             stories.append(contentsOf: newStories)
             currentPageIndex += 1
         } catch {
-            // handle error
-            // FIX
+            alertError = AlertError(message: error.localizedDescription)
         }
         
         isLoading = false
@@ -63,13 +68,19 @@ final class StoryListViewModel {
         } else {
             userActivity.likedStoryIds.insert(story.id)
         }
-        // FIX
-        try? activityRepository.updateUserActivity(userActivity)
+        do {
+            try activityRepository.updateUserActivity(userActivity)
+        } catch {
+            alertError = AlertError(message: error.localizedDescription)
+        }
     }
     
     func markAsSeen(_ story: Story) {
         userActivity.seenStoryIds.insert(story.id)
-        // FIX
-        try? activityRepository.updateUserActivity(userActivity)
+        do {
+            try activityRepository.updateUserActivity(userActivity)
+        } catch {
+            alertError = AlertError(message: error.localizedDescription)
+        }
     }
 }

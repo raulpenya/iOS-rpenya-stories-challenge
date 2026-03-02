@@ -12,7 +12,7 @@ struct StorySelection: Identifiable {
 }
 
 struct StoryListView: View {
-    let viewModel: StoryListViewModel
+    @Bindable var viewModel: StoryListViewModel
     @State private var selection: StorySelection?
     
     var body: some View {
@@ -39,6 +39,13 @@ struct StoryListView: View {
             StoriesListFullScreenView(
                 viewModel: viewModel,
                 initialIndex: selection.id
+            )
+        }
+        .alert(item: $viewModel.alertError) { alertError in
+            Alert(
+                title: Text("Error"),
+                message: Text(alertError.message),
+                dismissButton: .default(Text("OK"))
             )
         }
     }

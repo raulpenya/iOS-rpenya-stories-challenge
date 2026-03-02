@@ -9,7 +9,7 @@ import SwiftUI
 
 struct StoriesListFullScreenView: View {
 
-    let viewModel: StoryListViewModel
+    @Bindable var viewModel: StoryListViewModel
 
     @State private var currentIndex: Int?
     @Environment(\.dismiss) private var dismiss
@@ -50,6 +50,13 @@ struct StoriesListFullScreenView: View {
                     }
             )
             .ignoresSafeArea()
+        }
+        .alert(item: $viewModel.alertError) { alertError in
+            Alert(
+                title: Text("Error"),
+                message: Text(alertError.message),
+                dismissButton: .default(Text("OK"))
+            )
         }
     }
 }
