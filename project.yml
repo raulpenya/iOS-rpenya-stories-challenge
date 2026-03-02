@@ -1,21 +1,331 @@
 name: rpenya-stories-challenge
 
+########################
+#
+# Options
+#
+########################
+
 options:
   bundleIdPrefix: rpa
 
+########################
+#
+# Packages
+#
+########################
+
+packages:
+
+########################
+#
+# Configs
+#
+########################
+
+configs:
+  Debug: debug
+  QA: release
+  Staging: release
+  Production: release
+
+########################
+#
+# Build Settings
+#
+########################
+
 settings:
   base:
-    SWIFT_VERSION: 5.9
+    SWIFT_VERSION: 6.0
     IPHONEOS_DEPLOYMENT_TARGET: 17.0
+    CURRENT_PROJECT_VERSION: 20260302
+    ENABLE_BITCODE: 'NO'
+    MARKETING_VERSION: 0.0.1
+    VERSIONING_SYSTEM: apple-generic
+    OTHER_LDFLAGS: $(inherited) -ObjC
+    SWIFT_APPROACHABLE_CONCURRENCY: YES
 
-targets:
-  MyApp:
-    type: application
-    platform: iOS
+########################
+#
+# Scheme Templates
+#
+########################
+
+schemeTemplates:
+  AppScheme:
+    run:
+      environmentVariables:
+        OS_ACTIVITY_MODE: disable
+  ProductionScheme:
+    templates:
+      - AppScheme
+    build:
+      targets:
+        rpenya-stories-challenge: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+    profile:
+      config: Production
+    analyze:
+      config: Debug
+    archive:
+      config: Production
+
+  QAScheme:
+    templates:
+      - AppScheme
+    build:
+      targets:
+        rpenya-stories-challenge: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+    profile:
+      config: Production
+    analyze:
+      config: Debug
+    archive:
+      config: QA
+
+  StagingScheme:
+    templates:
+      - AppScheme
+    build:
+      targets:
+        rpenya-stories-challenge: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+    profile:
+      config: Production
+    analyze:
+      config: Debug
+    archive:
+      config: Staging
+
+  TestScheme:
+    build:
+      targets:
+        rpenya-stories-challenge-tests: [test]
+    test:
+      targets:
+        - rpenya-stories-challenge-tests
+
+########################
+#
+# Schemes
+#
+########################
+
+schemes:
+  rpenya-stories-challenge:
+    templates:
+      - ProductionScheme
+      - TestScheme
+    test:
+      config: Debug
+  rpenya-stories-challenge qa:
+    templates:
+      - QAScheme
+      - TestScheme
+  rpenya-stories-challenge staging:
+    templates:
+      - StagingScheme
+
+########################
+#
+# Target Templates
+#
+########################
+
+targetTemplates:
+  CountryTemplate:
     sources:
       - path: rpenya-stories-challenge
-    info:
-      path: rpenya-stories-challenge/Info.plist
+        excludes:
+          - "Supporting Files"
+
+    ########################
+    #
+    # Build Settings
+    #
+    ########################
+
+    settings:      
+      base:
+        CODE_SIGN_STYLE: Manual
+        DEBUG_INFORMATION_FORMAT: dwarf-with-dsym
+        ENABLE_DEBUG_DYLIB: YES
+        ENABLE_BITCODE: NO
+        OTHER_LDFLAGS: $(inherited)
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_CFBundleDisplayName: "$(PRODUCT_NAME)"
+        INFOPLIST_KEY_UILaunchStoryboardName: "LaunchScreen"
+        INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
+      configs:
+        Production:
+          CODE_SIGN_IDENTITY: "iPhone Distribution"
+          ASSETCATALOG_COMPILER_APPICON_NAME: "AppIcon"
+          VALIDATE_PRODUCT: "YES"
+          MTL_ENABLE_DEBUG_INFO: "NO"
+          # REDIRECT: "www"
+          PROVISIONING_PROFILE_SPECIFIER: "match AppStore $(PRODUCT_BUNDLE_IDENTIFIER)"
+          SWIFT_ACTIVE_COMPILATION_CONDITIONS:
+            - RELEASE
+        QA:
+          DEVELOPMENT_TEAM: 2JVZ3VZ64M
+          PRODUCT_NAME: "rpenya-stories-challenge qa"
+          ENABLE_TESTABILITY: "YES"
+          MTL_ENABLE_DEBUG_INFO: "YES"
+          ONLY_ACTIVE_ARCH: "YES"
+          CODE_SIGN_IDENTITY: "iPhone Distribution"
+          ASSETCATALOG_COMPILER_APPICON_NAME: "AppIcon"
+          PROVISIONING_PROFILE_SPECIFIER: "match InHouse $(PRODUCT_BUNDLE_IDENTIFIER)"
+          # WEB: "${PRE}"
+          # REDIRECT: "${PRE}"
+          # API: "api${PRE}"
+          OTHER_SWIFT_FLAGS: "-DQA_BUILD"
+          SWIFT_ACTIVE_COMPILATION_CONDITIONS:
+            - DEBUG
+        Staging:
+          DEVELOPMENT_TEAM: 2JVZ3VZ64M
+          PRODUCT_NAME: "rpenya-stories-challenge staging"
+          ENABLE_TESTABILITY: "YES"
+          MTL_ENABLE_DEBUG_INFO: "YES"
+          ONLY_ACTIVE_ARCH: "YES"
+          CODE_SIGN_IDENTITY: "iPhone Distribution"
+          ASSETCATALOG_COMPILER_APPICON_NAME: "AppIcon"
+          PROVISIONING_PROFILE_SPECIFIER: "match InHouse $(PRODUCT_BUNDLE_IDENTIFIER)"
+          SWIFT_ACTIVE_COMPILATION_CONDITIONS:
+            - DEBUG
+        Debug:
+          DEVELOPMENT_TEAM: 2JVZ3VZ64M
+          PRODUCT_NAME: "rpenya-stories-challenge qa"
+          ENABLE_TESTABILITY: "YES"
+          MTL_ENABLE_DEBUG_INFO: "YES"
+          ONLY_ACTIVE_ARCH: "YES"
+          CODE_SIGN_IDENTITY: "Apple Development"
+          ASSETCATALOG_COMPILER_APPICON_NAME: "AppIcon"
+          PROVISIONING_PROFILE_SPECIFIER: "match Development $(PRODUCT_BUNDLE_IDENTIFIER)"
+          # WEB: "${PRE}"
+          # REDIRECT: "${PRE}"
+          # API: "api${PRE}"
+          OTHER_SWIFT_FLAGS: "-DQA_BUILD"
+          SWIFT_ACTIVE_COMPILATION_CONDITIONS:
+            - DEBUG
+
+    ########################
+    #
+    # Build Scripts
+    #
+    ########################
+
+    # postBuildScripts:
+
+    ########################
+    #
+    # Dependencies
+    #
+    ########################
+
+    dependencies:
+
+########################
+#
+# Targets
+#
+########################
+
+targets:
+
+  rpenya-stories-challenge:
+    type: application
+    platform: iOS
+    templates:
+      - CountryTemplate
+    sources:
+      - path: rpenya-stories-challenge/Supporting Files
+
+    ########################
+    #
+    # Build Settings
+    #
+    ########################
+
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: rpa.rpenya-stories-challenge
+        # DEVELOPMENT_TEAM: "763L973CBP"
+        # PUSHER_API_KEY: "0aabe23b6c315b326617"
+        GENERATE_INFOPLIST_FILE: YES
+      configs:
+        Production:
+          PRODUCT_BUNDLE_IDENTIFIER: "rpa.rpenya-stories-challenge"
+          PRODUCT_NAME: "rpenya-stories-challenge"
+          # ALLOWLISTED_DOMAINS: "${WEB}.weddingpro.com, ${REDIRECT}.weddingpro.com, ${WEB}.theknotpro.com, ${REDIRECT}.theknotpro.com"
+          # API: "gpapi"
+        QA:
+          PRODUCT_BUNDLE_IDENTIFIER: "rpa.rpenya-stories-challenge.beta"
+          # ALLOWLISTED_DOMAINS: "${WEB}.weddingpro.com, ${REDIRECT}.weddingpro.com, qa.theknotpro.com"
+          # API: "api${PRE}"
+        Debug:
+          PRODUCT_BUNDLE_IDENTIFIER: "rpa.rpenya-stories-challenge.beta"
+          # ALLOWLISTED_DOMAINS: "${WEB}.weddingpro.com, ${REDIRECT}.weddingpro.com, qa.theknotpro.com"
+          # API: "api${PRE}"
+          # PUSHER_API_KEY: "38039c54f1e9afd146d0"
+        Staging:
+          PRODUCT_BUNDLE_IDENTIFIER: "rpa.rpenya-stories-challenge.beta"
+          # ALLOWLISTED_DOMAINS: "${WEB}.weddingpro.com, ${REDIRECT}.weddingpro.com, qa.theknotpro.com"
+          # API: "gpapi"
+
+  ########################
+  #
+  # Unit Tests
+  #
+  ########################
+
+  rpenya-stories-challenge-tests:
+    type: bundle.unit-test
+    platform: iOS
+    templates:
+    codeSign: false
+    buildImplicitDependencies: true
+    sources:
+      - path: rpenya-stories-challenge-tests
+    info:
+      path: rpenya-stories-challenge-tests/rpenya_stories_challenge_tests.plist
+      properties:
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        NSPrincipalClass: UnitTests.SpecSuiteSwizzler
+    settings:
+      base:
+        OTHER_LDFLAGS: $(inherited)
+        CODE_SIGN_STYLE: "Automatic"
+        PRODUCT_NAME: "$(TARGET_NAME)"
+        ENABLE_BITCODE: "NO"
+        COUNTRY: "$(TARGET_NAME)"
+        DEVELOPMENT_TEAM: 2JVZ3VZ64M
+        PRODUCT_BUNDLE_IDENTIFIER: rpa.rpenya-stories-challenge.rpenya-stories-challenge-tests
+        TEST_HOST: $(BUILT_PRODUCTS_DIR)/rpenya-stories-challenge qa.app/rpenya-stories-challenge qa
+        BUNDLE_LOADER: $(TEST_HOST)
+      configs:
+        Production:
+          ENABLE_TESTABILITY: false
+          ONLY_ACTIVE_ARCH: false
+        QA:
+          ENABLE_TESTABILITY: true
+          ONLY_ACTIVE_ARCH: true
+        Debug:
+          ENABLE_TESTABILITY: true
+          MTL_ENABLE_DEBUG_INFO: "INCLUDE_SOURCE"
+          ONLY_ACTIVE_ARCH: true
+        Staging:
+          ENABLE_TESTABILITY: true
+          ONLY_ACTIVE_ARCH: true
+    dependencies:
+      - target: rpenya-stories-challenge
