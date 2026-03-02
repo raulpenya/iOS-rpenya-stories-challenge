@@ -5,6 +5,8 @@
 This project is an implementation of a Stories feature inspired by common social media patterns.  
 The goal was to deliver a functional, clean, and maintainable solution within a **4-hour time constraint**, focusing on architecture, state management, and user experience.
 
+https://voodoo.notion.site/Technical-test-iOS-Engineer-BeReal-1a0a0b481db480649919ff336749e382
+
 The application allows:
 
 - Horizontal browsing of stories
@@ -262,8 +264,8 @@ Then map to presentation layer.
 
 ## 7. Code Quality Refinements
 
-- Fix minor naming typo (loadUserActitvity)
-- Remove unused helper (generateStories)
+- Fix minor naming typo (`loadUserActitvity`)
+- Remove unused helper (`generateStories`)
 - Stronger domain modeling for IDs
 - Replace NSError with domain-specific error types
 
